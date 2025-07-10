@@ -18,3 +18,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\Qr\CircleQrService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\EventListener\InvalidRequestExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }

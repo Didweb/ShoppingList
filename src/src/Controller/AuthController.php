@@ -45,6 +45,8 @@ final class AuthController extends AbstractController
         $em->persist($user);
         $em->flush();
 
+        // CREAR CIRCULO DEFAULT
+
         return JsonResponseFactory::success('User created');
     }
 

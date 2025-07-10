@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\ValueObject\HexColor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CircleRepository;
@@ -16,14 +17,14 @@ class Circle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $name = null;
+    #[ORM\Column(length: 100, nullable: false)]
+    private string $name;
 
-    #[ORM\Column(length: 9)]
-    private ?string $color = null;
+    #[ORM\Column(type: 'hex_color', nullable: false)]
+    private HexColor $color;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $qr = null;
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
+    private string $qr;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -47,7 +48,7 @@ class Circle
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -59,19 +60,19 @@ class Circle
         return $this;
     }
 
-    public function getColor(): ?string
+    public function getColor(): HexColor
     {
         return $this->color;
     }
 
-    public function setColor(string $color): static
+    public function setColor(HexColor $color): static
     {
         $this->color = $color;
 
         return $this;
     }
 
-    public function getQr(): ?string
+    public function getQr(): string
     {
         return $this->qr;
     }
@@ -95,9 +96,6 @@ class Circle
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
     public function getUsers(): Collection
     {
         return $this->users;

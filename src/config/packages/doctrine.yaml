@@ -10,7 +10,8 @@ doctrine:
         use_savepoints: true
         
         types:
-            status: App\Doctrine\StatusType
+            status: App\Doctrine\Type\StatusType
+            hex_color: App\Doctrine\Type\HexColorType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
