@@ -26,3 +26,7 @@ services:
     App\EventListener\InvalidRequestExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+            
+    App\EventListener\ApiExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }

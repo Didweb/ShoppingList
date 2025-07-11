@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\DTO\Auth\RegisterDto;
+use App\Service\Auth\LoginService;
 use App\Utils\JsonResponseFactory;
+use App\Request\Auth\RegisterRequest;
+use App\Service\Auth\RegisterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,6 +18,12 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 final class AuthController extends AbstractController
 {
+
+    public function __construct(
+        private RegisterService $registerService,
+        private RegisterRequest $registerRequest
+    ) {}
+
     #[Route('/auth', name: 'app_auth')]
     public function index(): JsonResponse
     {
@@ -24,28 +34,12 @@ final class AuthController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        
+        $validData = $this->registerRequest->validate($data);
 
-        if (empty($data['email']) || empty($data['password']) || empty($data['name'])) {
-            return JsonResponseFactory::error('All fields are required.', 400);
-        }
+        $registerDto = new RegisterDto($validData['email'], $validData['password'], $validData['name']);
 
-        $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        if ($existingUser) {
-            return JsonResponseFactory::error('Email already in use', 409);
-        }
-
-        $user = new User();
-        $user->setEmail($data['email']);
-
-        $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
-        $user->setPassword($hashedPassword);
-        $user->setName($data['name']);
-        $user->setRoles(['ROLE_USER']);
-
-        $em->persist($user);
-        $em->flush();
-
-        // CREAR CIRCULO DEFAULT
+        $this->registerService->register($registerDto);
 
         return JsonResponseFactory::success('User created');
     }

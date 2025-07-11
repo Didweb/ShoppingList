@@ -23,21 +23,16 @@ class CircleCreateController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
+        $validData = $this->circleCreateRequest->validate($data);
+
         $cirleCreateDto = new CircleCreateDto($data['name'], $data['color']);
 
-        try {
-            $validData = $this->circleCreateRequest->validate($data);
+        $cirleCreateDto = new CircleCreateDto(
+            $validData['name'],
+            $validData['color'],
+        );
 
-            $cirleCreateDto = new CircleCreateDto(
-                $validData['name'],
-                $validData['color'],
-            );
-
-            $this->createCircleService->create($cirleCreateDto);
-
-        } catch (\Throwable $e) {
-            return JsonResponseFactory::error('No se pudo crear el círculo: '.$e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->createCircleService->create($cirleCreateDto);
 
         return new JsonResponse(['message' => 'Círculo creado correctamente'], Response::HTTP_CREATED);
     }
