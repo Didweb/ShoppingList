@@ -5,7 +5,7 @@ interface QrServiceInterface
 {
     public function generatePayload(int $circleId): string;
 
-    public function getQrImageBase64FromFile(string $payload): string;
+    public function getQrImageBase64FromFile(int $idCircle): string;
 
     public function generateAndSaveQrImage(int $circleId): void;
 

@@ -38,3 +38,9 @@ services:
 
     App\Utils\EnvironmentCheckerInterface:
         alias: App\Utils\EnvironmentChecker
+
+    App\Utils\AuthenticatedUser:
+        arguments:
+            $security: '@security.helper'
+
+    App\Utils\AuthenticatedUserInterface: '@App\Utils\AuthenticatedUser'
