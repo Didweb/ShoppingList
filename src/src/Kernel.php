@@ -15,7 +15,11 @@ class Kernel extends BaseKernel
         parent::boot();
 
         if (!Type::hasType('status')) {
-            Type::addType('status', \App\Doctrine\StatusType::class);
+            Type::addType('status', \App\Doctrine\Type\StatusType::class);
+        }
+
+        if (!Type::hasType('hex_color')) {
+            Type::addType('hex_color', \App\Doctrine\Type\HexColorType::class);
         }
     }
 }
