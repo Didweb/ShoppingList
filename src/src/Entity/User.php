@@ -34,12 +34,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Circle::class, mappedBy: 'users')]
     private Collection $circles;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $resetPasswordToken = null;
+
+    #[ORM\Column(nullable: true, type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $resetPasswordExpiresAt = null;
 
     public function __construct()
     {
@@ -160,6 +165,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->circles->removeElement($circle);
 
+        return $this;
+    }
+
+     public function getResetPasswordToken(): ?string
+    {
+        return $this->resetPasswordToken;
+    }
+
+    public function setResetPasswordToken(?string $token): self
+    {
+        $this->resetPasswordToken = $token;
+        return $this;
+    }
+
+    public function getResetPasswordExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->resetPasswordExpiresAt;
+    }
+
+    public function setResetPasswordExpiresAt(?\DateTimeImmutable $expiresAt): self
+    {
+        $this->resetPasswordExpiresAt = $expiresAt;
         return $this;
     }
 }
