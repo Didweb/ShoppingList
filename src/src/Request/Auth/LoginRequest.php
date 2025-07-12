@@ -6,7 +6,7 @@ use App\Request\RequestValidatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class RegisterRequest extends AbstractRequestValidator implements RequestValidatorInterface
+class LoginRequest extends AbstractRequestValidator implements RequestValidatorInterface
 {
     public function __construct(ValidatorInterface $validator) 
     {
@@ -15,6 +15,7 @@ class RegisterRequest extends AbstractRequestValidator implements RequestValidat
 
     public function validate(array $data): array
     {
+
         $constraints = new Assert\Collection([
             'email' => [
                 new Assert\NotBlank(message: 'El email es obligatorio.'),
@@ -28,11 +29,7 @@ class RegisterRequest extends AbstractRequestValidator implements RequestValidat
                     'min' => 8,
                     'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres.',
                 ]),
-            ],
-            'name' => [
-                new Assert\NotBlank(message: 'El nombre es obligatorio.'),
-                new Assert\Type('string'),
-            ],
+            ]
         ]);
 
         $this->validateData($data, $constraints);

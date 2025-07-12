@@ -16,10 +16,8 @@ class HexColor
 
     private function ensureIsValid(string $value): void
     {
-        if (!preg_match('/^#[0-9A-F]{8}$/', $value)) {
-            throw new InvalidArgumentException(
-                sprintf('Hex color must be 9 characters long including "#", got "%s"', $value)
-            );
+        if (!preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/', $value)) {
+            throw new InvalidArgumentException('Formato color inválido: debe ser hexadecimal con o sin transparencia.');
         }
     }
 

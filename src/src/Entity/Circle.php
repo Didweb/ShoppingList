@@ -23,8 +23,8 @@ class Circle
     #[ORM\Column(type: 'hex_color', nullable: false)]
     private HexColor $color;
 
-    #[ORM\Column(type: Types::TEXT, nullable: false)]
-    private string $qr;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $qr = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -72,12 +72,12 @@ class Circle
         return $this;
     }
 
-    public function getQr(): string
+    public function getQr(): ?string
     {
         return $this->qr;
     }
 
-    public function setQr(string $qr): static
+    public function setQr(?string $qr): static
     {
         $this->qr = $qr;
 

@@ -1,13 +1,13 @@
 <?php
 namespace App\Service\Circle;
 
-use App\DTO\Circle\CircleCreateDto;
+use App\Entity\User;
 use App\Entity\Circle;
 use App\ValueObject\HexColor;
+use App\DTO\Circle\CircleCreateDto;
 use App\Service\Qr\CircleQrService;
 use App\Repository\CircleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
 
 class CircleCreateService
 {
@@ -17,30 +17,24 @@ class CircleCreateService
             private CircleQrService $qrService)
     {}
 
-    public function create(?CircleCreateDto $cirleCreateDto, bool $isDefault = false ): void
+    public function create(User $user, ?CircleCreateDto $cirleCreateDto): void
     {
-        // $user = $this->security->getUser();
+        $circle = new Circle();
+        $circle->setName($cirleCreateDto->name);
+        $circle->setColor(new HexColor($cirleCreateDto->color));
+        $circle->setCreatedBy($user);
 
-        // if (!$user) {
-        //     throw new \RuntimeException('Usuario no encontrado');
-        // }
-       
-        // $circle = new Circle();
-        // $circle->setName('Principal');
-        // $circle->setColor(new HexColor('#7233A0'));
-        // $circle->setCreatedBy($user);
+        $this->em->persist($circle);
+        $this->em->flush();
 
-        // $this->em->persist($circle);
-        // $this->em->flush();
+        $payload = $this->qrService->generatePayload($circle->getId());
 
-        // $payload = $this->qrService->generatePayload($circle->getId());
+        $this->qrService->generateAndSaveQrImage($circle->getId());
 
-        // $this->qrService->generateAndSaveQrImage($circle->getId());
+        $circle->setQr($payload);
 
-        // $circle->setQr($payload);
-
-        // $this->em->persist($circle);
-        // $this->em->flush();
+        $this->em->persist($circle);
+        $this->em->flush();
         
     }
 }

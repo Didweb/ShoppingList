@@ -25,14 +25,9 @@ class CircleCreateController extends AbstractController
 
         $validData = $this->circleCreateRequest->validate($data);
 
-        $cirleCreateDto = new CircleCreateDto($data['name'], $data['color']);
+        $cirleCreateDto = new CircleCreateDto($validData['name'],$validData['color']);
 
-        $cirleCreateDto = new CircleCreateDto(
-            $validData['name'],
-            $validData['color'],
-        );
-
-        $this->createCircleService->create($cirleCreateDto);
+        $this->createCircleService->create($this->getUser(), $cirleCreateDto);
 
         return new JsonResponse(['message' => 'Círculo creado correctamente'], Response::HTTP_CREATED);
     }

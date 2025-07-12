@@ -3,6 +3,7 @@ namespace App\Service\Auth;
 
 use App\Entity\User;
 use App\DTO\Auth\RegisterDto;
+use App\DTO\Circle\CircleCreateDto;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Circle\CircleCreateService;
@@ -11,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class RegisterService
 {
-
+    
     public function __construct(
             private UserRepository $userRepository,
             private EntityManagerInterface $em,
@@ -38,7 +39,9 @@ class RegisterService
         $this->em->persist($user);
         $this->em->flush();
 
-        $this->circleCreateService->create(null, true);
+        $cirleCreateDto = new CircleCreateDto('Principal', '#6B00AF');
+        
+        $this->circleCreateService->create($user, $cirleCreateDto);
         
     }
 }

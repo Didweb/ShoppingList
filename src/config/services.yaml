@@ -25,8 +25,16 @@ services:
 
     App\EventListener\InvalidRequestExceptionListener:
         tags:
-            - { name: kernel.event_listener, event: kernel.exception }
+            - { name: kernel.event_listener, event: kernel.exception, priority: 100  }
             
     App\EventListener\ApiExceptionListener:
         tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -100 }
+
+    App\Utils\EnvironmentChecker:
+        arguments:
+            $environment: '%kernel.environment%'
+        public: false
+
+    App\Utils\EnvironmentCheckerInterface:
+        alias: App\Utils\EnvironmentChecker

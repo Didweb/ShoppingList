@@ -9,9 +9,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CircleCreateRequest extends AbstractRequestValidator implements RequestValidatorInterface
 {
-    public function __construct(
-        private readonly ValidatorInterface $validator
-    ) {}
+    public function __construct(ValidatorInterface $validator) 
+    {
+        parent::__construct($validator);
+    }
 
     public function validate(array $data): array
     {

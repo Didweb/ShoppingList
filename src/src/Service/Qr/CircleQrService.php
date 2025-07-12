@@ -8,14 +8,14 @@ use App\Service\Qr\QrServiceInterface;
 class CircleQrService implements QrServiceInterface
 {
     private const VERSION = 1;
-    private const PATH_QR_CIRCLES = '/qr_codes/circles/';
+    private const PATH_QR_CIRCLES = '/qr_codes';
     private string $pathCompleto;
     private ?string $payload = null;
 
 
     public function __construct(private string $projectDir)
     {
-        $this->pathCompleto = $projectDir . '/public/' . self::PATH_QR_CIRCLES;
+        $this->pathCompleto = $projectDir . '/public' . self::PATH_QR_CIRCLES;
     }
 
     public function payload(): string
@@ -64,7 +64,7 @@ class CircleQrService implements QrServiceInterface
             mkdir($dir, 0755, true);
         }
 
-        file_put_contents($this->pathCompleto, $pngData);
+        file_put_contents($this->pathCompleto . '/qr_'.$circleId.'.png', $pngData);
     }
 
     public function parsePayload(string $payload): array

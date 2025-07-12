@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\DTO\Auth\LoginDto;
 use App\DTO\Auth\RegisterDto;
+use App\Request\Auth\LoginRequest;
 use App\Service\Auth\LoginService;
 use App\Utils\JsonResponseFactory;
 use App\Request\Auth\RegisterRequest;
@@ -21,7 +23,9 @@ final class AuthController extends AbstractController
 
     public function __construct(
         private RegisterService $registerService,
-        private RegisterRequest $registerRequest
+        private LoginService $loginService,
+        private RegisterRequest $registerRequest,
+        private LoginRequest $loginRequest,
     ) {}
 
     #[Route('/auth', name: 'app_auth')]
@@ -45,28 +49,16 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/login', name: 'api_login', methods: ['POST'])]
-    public function login(
-                        Request $request,
-                        EntityManagerInterface $em,
-                        UserPasswordHasherInterface $passwordHasher,
-                        JWTTokenManagerInterface $JWTManager
-                    ): JsonResponse {
+    public function login(Request $request): JsonResponse 
+    {
+
         $data = json_decode($request->getContent(), true);
 
-        if (empty($data['email']) || empty($data['password'])) {
-            return JsonResponseFactory::error('Missing credentials', 400);
-        }
+        $validData = $this->loginRequest->validate($data);
 
-        $user = $em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        if (!$user) {
-            return JsonResponseFactory::error('Invalid credentials. Email not found.', 401);
-        }
+        $loginDto = new LoginDto($validData['email'], $validData['password']);
 
-        if (!$passwordHasher->isPasswordValid($user, $data['password'])) {
-            return JsonResponseFactory::error('Invalid credentials. Password Error.', 401);
-        }
-
-        $token = $JWTManager->create($user);
+        $token = $this->loginService->login($loginDto);
 
         return JsonResponseFactory::success([
             'token' => $token
