@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ItemRepository;
+use App\ValueObject\Slug;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ItemRepository;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
 class Item
@@ -14,15 +15,18 @@ class Item
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    private ?string $name = null;
+    private string $name;
 
-    #[ORM\Column(length: 100)]
-    private ?string $slug = null;
+    #[ORM\Column(type: 'slug')]
+    private Slug $slug;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $createdBy = null;
 
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Item $canonicalItem = null;
 
     public function getId(): ?int
     {
@@ -53,16 +57,26 @@ class Item
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): Slug
     {
         return $this->slug;
     }
 
 
-    public function setSlug(string $slug): self
+    public function setSlug(Slug $slug): self
     {
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function setCanonical(Item $canonical): void
+    {
+        $this->canonicalItem = $canonical;
+    }
+
+    public function getCanonical(): Item
+    {
+        return $this->canonicalItem ?? $this;
     }
 }
