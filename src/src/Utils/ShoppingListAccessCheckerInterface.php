@@ -5,5 +5,5 @@ use App\Entity\ShoppingList;
 
 interface ShoppingListAccessCheckerInterface
 {
-    public function userCanAccessShoppingList(ShoppingList $shoppingList, AuthenticatedUserInterface $authUser): bool;
+    public function userCanAccessShoppingList(ShoppingList $shoppingList, int $idUser): bool;
 }

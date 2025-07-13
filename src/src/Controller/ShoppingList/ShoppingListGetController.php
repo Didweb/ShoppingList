@@ -23,9 +23,9 @@ class ShoppingListGetController extends AbstractController
     {
         $validData = $this->shoppingListGetRequest->validate(['id' => $id]);
 
-        $shoppingListGetDto = new ShoppingListGetDto($validData['id']);
+        $shoppingListGetDto = new ShoppingListGetDto($validData['id'], $this->authUser->getId());
 
-        $shoppingListDto = $this->shoppingListGetService->get($shoppingListGetDto, $this->authUser);
+        $shoppingListDto = $this->shoppingListGetService->get($shoppingListGetDto);
 
         return JsonResponseFactory::success(['Shopping List' => $shoppingListDto]);
     }

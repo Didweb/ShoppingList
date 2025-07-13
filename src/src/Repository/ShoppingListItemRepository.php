@@ -16,28 +16,16 @@ class ShoppingListItemRepository extends ServiceEntityRepository
         parent::__construct($registry, ShoppingListItem::class);
     }
 
-    //    /**
-    //     * @return ShoppingListItem[] Returns an array of ShoppingListItem objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ShoppingListItem
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function existsItemInShoppingList(int $shoppingListId, int $itemId): bool
+    {
+        return (bool) $this->createQueryBuilder('sli')
+            ->select('1')
+            ->where('sli.shoppingList = :shoppingListId')
+            ->andWhere('sli.item = :itemId')
+            ->setParameter('shoppingListId', $shoppingListId)
+            ->setParameter('itemId', $itemId)
+            ->setMaxResults(1) 
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
