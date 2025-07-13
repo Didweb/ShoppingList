@@ -16,28 +16,14 @@ class CircleRepository extends ServiceEntityRepository
         parent::__construct($registry, Circle::class);
     }
 
-    //    /**
-    //     * @return Circle[] Returns an array of Circle objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findByOwnerOrMembership(int $userId): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.users', 'u')
+            ->where('c.createdBy = :userId OR u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
 
-    //    public function findOneBySomeField($value): ?Circle
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $qb->getResult();
+    }
 }

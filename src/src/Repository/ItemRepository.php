@@ -16,28 +16,27 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
-    //    /**
-    //     * @return Item[] Returns an array of Item objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('i.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findBySlugLikeAndOwners(string $slugPartial, array $allowedOwnerIds): array
+    {
 
-    //    public function findOneBySomeField($value): ?Item
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb = $this->createQueryBuilder('i');
+        $qb->where('i.slug LIKE :slug')
+        ->andWhere($qb->expr()->orX(
+            'i.createdBy IS NULL',
+            'i.createdBy IN (:owners)'
+        ))
+        ->setParameter('slug', '%' . $slugPartial . '%')
+        ->setParameter('owners', $allowedOwnerIds)
+        ->setMaxResults(20);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllCanonicalItems(): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.canonicalItem IS NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }
