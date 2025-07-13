@@ -21,5 +21,9 @@ class Kernel extends BaseKernel
         if (!Type::hasType('hex_color')) {
             Type::addType('hex_color', \App\Doctrine\Type\HexColorType::class);
         }
+
+        if (!Type::hasType('slug')) {
+            Type::addType('slug', \App\Doctrine\Type\SlugType::class);
+        }
     }
 }

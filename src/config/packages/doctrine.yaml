@@ -12,6 +12,7 @@ doctrine:
         types:
             status: App\Doctrine\Type\StatusType
             hex_color: App\Doctrine\Type\HexColorType
+            slug: App\Doctrine\Type\SlugType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
