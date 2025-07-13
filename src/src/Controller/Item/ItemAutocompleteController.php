@@ -25,9 +25,9 @@ class ItemAutocompleteController  extends AbstractController
         $data = json_decode($request->getContent(), true);
         
         $validData = $this->itemAutocompleteRequest->validate($data);
-        $itemPartialDto = new ItemPartialDto($validData['q']);
+        $itemPartialDto = new ItemPartialDto($validData['q'], $this->authUser->getId());
 
-        $suggestions = $this->itemAutocompleteService->suggest($itemPartialDto, $this->authUser);
+        $suggestions = $this->itemAutocompleteService->suggest($itemPartialDto);
 
   
         return JsonResponseFactory::success(['sugesstions' => $suggestions]);

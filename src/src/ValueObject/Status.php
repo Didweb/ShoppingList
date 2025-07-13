@@ -2,6 +2,7 @@
 namespace App\ValueObject;
 
 use InvalidArgumentException;
+use App\Exception\InvalidOptionValueObjectException;
 
 final class Status
 {
@@ -18,7 +19,7 @@ final class Status
     public function __construct(string $value)
     {
         if (!in_array($value, self::$allowed, true)) {
-            throw new InvalidArgumentException("Invalid status: $value");
+            throw new InvalidOptionValueObjectException("Invalid status: $value");
         }
 
         $this->value = $value;
