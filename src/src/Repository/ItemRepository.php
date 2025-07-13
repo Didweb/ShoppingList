@@ -39,4 +39,25 @@ class ItemRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findBySlugLike(string $slugPartial): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.slug LIKE :slug')
+            ->setParameter('slug', '%' . $slugPartial . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneBySlugAndOwners(string $slug, array $ownerIds): ?Item
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.slug = :slug')
+            ->andWhere('i.createdBy IN (:owners)')
+            ->setParameter('slug', $slug)
+            ->setParameter('owners', $ownerIds)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

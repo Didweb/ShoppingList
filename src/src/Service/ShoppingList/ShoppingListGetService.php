@@ -4,7 +4,6 @@ namespace App\Service\ShoppingList;
 use App\DTO\ShoppingList\ShoppingListDto;
 use App\Exception\UnauthorizedException;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Utils\AuthenticatedUserInterface;
 use App\Exception\EntityNotFoundException;
 use App\Repository\ShoppingListRepository;
 use App\DTO\ShoppingList\ShoppingListGetDto;
@@ -18,7 +17,7 @@ class ShoppingListGetService
             private ShoppingListAccessCheckerInterface $accessChecker)
     {}
 
-    public function get(ShoppingListGetDto $shoppingListGetDto, AuthenticatedUserInterface $authUser): ShoppingListDto
+    public function get(ShoppingListGetDto $shoppingListGetDto): ShoppingListDto
     {
 
         $shoppingList = $this->shoppingListRepository->find($shoppingListGetDto->id);
@@ -27,7 +26,7 @@ class ShoppingListGetService
             throw new EntityNotFoundException('Shopping List con id: ['.$shoppingListGetDto->id.'] no encontrado.');
         }
 
-        if (!$this->accessChecker->userCanAccessShoppingList($shoppingList, $authUser)) {
+        if (!$this->accessChecker->userCanAccessShoppingList($shoppingList, $shoppingListGetDto->idUser)) {
             throw new UnauthorizedException('No tienes acceso a esta Lista.');
         }
 

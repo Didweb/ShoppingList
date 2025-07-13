@@ -9,6 +9,8 @@ use App\Utils\EnvironmentCheckerInterface;
 use App\Exception\EmailAlreadyInUseException;
 use App\Exception\InvalidCredentialsException;
 use Symfony\Component\HttpFoundation\Response;
+use App\Exception\DuplicateNotAllowedException;
+use App\Exception\InvalidOptionValueObjectException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -64,7 +66,29 @@ class ApiExceptionListener
             return;
         }
 
+        if ($exception instanceof DuplicateNotAllowedException) {
+
+            $exceptionMessage = ['message' => $exception->getMessage(), 'Shopping List' => $exception->getData()];
+            $response = JsonResponseFactory::error(
+                            $exceptionMessage,
+                            $exception->getStatusCode()
+                        );
+            $event->setResponse($response);
+            return;
+        }
+
         if ($exception instanceof InvalidCredentialsException) {
+
+            $response = JsonResponseFactory::error(
+                            $exception->getMessage(),
+                            $exception->getStatusCode()
+                        );
+
+            $event->setResponse($response);
+            return;
+        }
+
+        if ($exception instanceof InvalidOptionValueObjectException) {
 
             $response = JsonResponseFactory::error(
                             $exception->getMessage(),
