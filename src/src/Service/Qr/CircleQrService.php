@@ -34,14 +34,16 @@ class CircleQrService implements QrServiceInterface
         return $this->payload;
     }
 
-    public function getQrImageBase64FromFile(string $filePath): string
+    public function getQrImageBase64FromFile(int $idCircle): string
     {
     
-        if (!file_exists($this->pathCompleto)) {
-            throw new \RuntimeException("Archivo QR no encontrado: $this->pathCompleto");
+        $path = $this->pathCompleto.'/qr_'.$idCircle.'.png';
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException("Archivo QR no encontrado: $path");
         }
 
-        $pngData = file_get_contents($this->pathCompleto);
+        $pngData = file_get_contents($path);
         return base64_encode($pngData);
     }
 

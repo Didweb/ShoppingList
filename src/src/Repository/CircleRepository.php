@@ -16,4 +16,14 @@ class CircleRepository extends ServiceEntityRepository
         parent::__construct($registry, Circle::class);
     }
 
+    public function findByOwnerOrMembership(int $userId): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.users', 'u')
+            ->where('c.createdBy = :userId OR u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery();
+
+        return $qb->getResult();
+    }
 }

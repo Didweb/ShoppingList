@@ -1,10 +1,10 @@
 <?php
 namespace App\Controller\Circle;
 
-use App\Utils\JsonResponseFactory;
 use App\DTO\Circle\CircleCreateDto;
 use App\Request\Circle\CircleCreateRequest;
 use App\Service\Circle\CircleCreateService;
+use App\Utils\JsonResponseFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +29,6 @@ class CircleCreateController extends AbstractController
 
         $this->createCircleService->create($this->getUser(), $cirleCreateDto);
 
-        return new JsonResponse(['message' => 'Círculo creado correctamente'], Response::HTTP_CREATED);
+        return JsonResponseFactory::success(['message' => 'Círculo creado correctamente'], Response::HTTP_CREATED);
     }
 }

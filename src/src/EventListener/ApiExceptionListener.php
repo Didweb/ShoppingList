@@ -3,6 +3,8 @@ namespace App\EventListener;
 
 use Psr\Log\LoggerInterface;
 use App\Utils\JsonResponseFactory;
+use App\Exception\UnauthorizedException;
+use App\Exception\EntityNotFoundException;
 use App\Utils\EnvironmentCheckerInterface;
 use App\Exception\EmailAlreadyInUseException;
 use App\Exception\InvalidCredentialsException;
@@ -33,6 +35,26 @@ class ApiExceptionListener
 
 
         if ($exception instanceof EmailAlreadyInUseException) {
+
+            $response = JsonResponseFactory::error(
+                            $exception->getMessage(),
+                            $exception->getStatusCode()
+                        );
+            $event->setResponse($response);
+            return;
+        }        
+        
+        if ($exception instanceof EntityNotFoundException) {
+
+            $response = JsonResponseFactory::error(
+                            $exception->getMessage(),
+                            $exception->getStatusCode()
+                        );
+            $event->setResponse($response);
+            return;
+        } 
+
+        if ($exception instanceof UnauthorizedException) {
 
             $response = JsonResponseFactory::error(
                             $exception->getMessage(),
