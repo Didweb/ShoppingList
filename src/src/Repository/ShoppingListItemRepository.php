@@ -28,4 +28,18 @@ class ShoppingListItemRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function changeStatus(int $idShoppingList, int $idItem, string $status): int
+    {
+        return $this->createQueryBuilder('sli')
+            ->update()
+            ->set('sli.status', ':newStatus')
+            ->where('sli.shoppingList = :shoppingListId')
+            ->andWhere('sli.item = :itemId')
+            ->setParameter('newStatus', $status)
+            ->setParameter('shoppingListId', $idShoppingList)
+            ->setParameter('itemId', $idItem)
+            ->getQuery()
+            ->execute();
+    }
 }

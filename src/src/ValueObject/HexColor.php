@@ -1,7 +1,7 @@
 <?php
 namespace App\ValueObject;
 
-use InvalidArgumentException;
+use App\Exception\InvalidOptionValueObjectException;
 
 class HexColor
 {
@@ -17,7 +17,7 @@ class HexColor
     private function ensureIsValid(string $value): void
     {
         if (!preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/', $value)) {
-            throw new InvalidArgumentException('Formato color inválido: debe ser hexadecimal con o sin transparencia.');
+            throw new InvalidOptionValueObjectException('Formato color inválido: debe ser hexadecimal con o sin transparencia.');
         }
     }
 
