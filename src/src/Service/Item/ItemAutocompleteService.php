@@ -1,23 +1,28 @@
 <?php
 namespace App\Service\Item;
 
-use App\DTO\Item\ItemPartialDto;
 use App\Entity\Item;
 use App\ValueObject\Slug;
+use App\DTO\Item\ItemPartialDto;
 use App\Repository\ItemRepository;
 use App\DTO\Item\ItemSuggestionDto;
+use App\Utils\AuthenticatedUserInterface;
+use App\Service\Circle\CircleAccessService;
 
 class ItemAutocompleteService
 {
-    public function __construct(private ItemRepository $itemRepository) 
+    public function __construct(
+        private ItemRepository $itemRepository,
+        private CircleAccessService $circleAccessService) 
     {}
 
-    public function suggest(ItemPartialDto $itemPartialDto): array
+    public function suggest(ItemPartialDto $itemPartialDto, AuthenticatedUserInterface $authUser): array
     {
         $searchTerm = mb_strtolower(trim($itemPartialDto->partial));
         $slugPartial = (new Slug($searchTerm))->value();
 
-        $candidates = $this->itemRepository->findBySlugLike($slugPartial);
+        $allowedOwnerIds = $this->circleAccessService->getAllowedOwnerIds($authUser->getId());
+        $candidates = $this->itemRepository->findBySlugLikeAndOwners($slugPartial, $allowedOwnerIds);
 
         $canonicalCandidates = [];
 

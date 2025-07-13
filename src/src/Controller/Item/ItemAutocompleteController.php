@@ -3,6 +3,7 @@ namespace App\Controller\Item;
 
 use App\DTO\Item\ItemPartialDto;
 use App\Utils\JsonResponseFactory;
+use App\Utils\AuthenticatedUserInterface;
 use App\Request\Item\ItemAutocompleteRequest;
 use App\Service\Item\ItemAutocompleteService;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,8 @@ class ItemAutocompleteController  extends AbstractController
 {
     public function __construct(
         private ItemAutocompleteService $itemAutocompleteService,
-        private ItemAutocompleteRequest $itemAutocompleteRequest
+        private ItemAutocompleteRequest $itemAutocompleteRequest,
+        private AuthenticatedUserInterface $authUser
     ) {}
 
     public function __invoke(Request $request): JsonResponse
@@ -25,7 +27,7 @@ class ItemAutocompleteController  extends AbstractController
         $validData = $this->itemAutocompleteRequest->validate($data);
         $itemPartialDto = new ItemPartialDto($validData['q']);
 
-        $suggestions = $this->itemAutocompleteService->suggest($itemPartialDto);
+        $suggestions = $this->itemAutocompleteService->suggest($itemPartialDto, $this->authUser);
 
   
         return JsonResponseFactory::success(['sugesstions' => $suggestions]);

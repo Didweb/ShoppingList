@@ -16,15 +16,20 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
-    public function findBySlugLike(string $slugPartial): array
+    public function findBySlugLikeAndOwners(string $slugPartial, array $allowedOwnerIds): array
     {
-        return $this->createQueryBuilder('i')
-            ->where('i.slug LIKE :partial')
-            ->setParameter('partial', '%' . $slugPartial . '%')
-            ->orderBy('i.name', 'ASC')
-            ->setMaxResults(20) 
-            ->getQuery()
-            ->getResult();
+
+        $qb = $this->createQueryBuilder('i');
+        $qb->where('i.slug LIKE :slug')
+        ->andWhere($qb->expr()->orX(
+            'i.createdBy IS NULL',
+            'i.createdBy IN (:owners)'
+        ))
+        ->setParameter('slug', '%' . $slugPartial . '%')
+        ->setParameter('owners', $allowedOwnerIds)
+        ->setMaxResults(20);
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findAllCanonicalItems(): array
