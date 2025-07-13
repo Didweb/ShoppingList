@@ -5,7 +5,7 @@ use App\Entity\ShoppingList;
 
 class ShoppingListAccessChecker implements ShoppingListAccessCheckerInterface
 {
-      public function userCanAccessShoppingList(ShoppingList $shoppingList, int $idUser): bool
+    public function userCanAccessShoppingList(ShoppingList $shoppingList, int $idUser): bool
     {
         $circle = $shoppingList->getCircle();
 

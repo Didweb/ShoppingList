@@ -13,7 +13,7 @@ use App\Request\ShoppingListItem\ItemRemoveFromListRequest;
 use App\Service\ShoppingListItem\ItemRemoveFromListService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/shopping-list-items/delete-item', methods: ['DELETE'])]
+#[Route('/api/shopping-list-items/delete-item', name: 'api_item_remove_from_list', methods: ['DELETE'])]
 class ItemRemoveFromListController extends AbstractController
 {
         public function __construct(
