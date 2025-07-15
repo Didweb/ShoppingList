@@ -21,7 +21,6 @@ class ShoppingListCreateService
 
     public function create(User $user, ShoppingListCreateDto $shoppingListCreateDto, AuthenticatedUserInterface $authUser): void
     {
-
         $circle = $this->cricleRepository->find($shoppingListCreateDto->idCircle);
 
         if(!$circle) {
