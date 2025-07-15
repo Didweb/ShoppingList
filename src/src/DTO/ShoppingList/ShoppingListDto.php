@@ -7,7 +7,7 @@ use App\DTO\ShoppingListItem\ShoppingListItemDto;
 
 final class ShoppingListDto
 {
-        public function __construct(
+    public function __construct(
         public readonly int $id,
         public readonly string $name,
         public readonly int $createdBy,
