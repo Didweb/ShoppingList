@@ -11,7 +11,7 @@ use App\Request\ShoppingListItem\ItemChangeStatusRequest;
 use App\Service\ShoppingListItem\ItemChangeStatusService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/api/shopping-list-items/change-status', name: 'api_item_change_status', methods: ['PUT'])]
+#[Route('/api/shopping-list-items/change-status', name: 'api_item_change_status', methods: ['PATCH'])]
 class ItemChangeStatusController extends AbstractController
 {
     public function __construct(
