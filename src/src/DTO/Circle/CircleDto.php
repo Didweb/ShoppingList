@@ -1,7 +1,9 @@
 <?php
 namespace App\DTO\Circle;
 
+use App\Entity\User;
 use App\Entity\Circle;
+use App\DTO\User\UserDto;
 use App\Entity\ShoppingList;
 use App\DTO\ShoppingList\ShoppingListDto;
 
@@ -24,7 +26,7 @@ final class CircleDto
             $circle->getName(),
             $circle->getColor()->value(),
             $circle->getCreatedBy()->getId(),
-            $circle->getUsers()->toArray(),
+            $circle->getUsers()->map(fn (User $u) => UserDto::fromEntity($u))->toArray(),
             $circle->getShoppingLists()->map(fn (ShoppingList $sl) => ShoppingListDto::fromEntity($sl))->toArray(),
             $qrBase64
         );
