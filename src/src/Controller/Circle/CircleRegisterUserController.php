@@ -25,6 +25,7 @@ class CircleRegisterUserController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $validData = $this->circleRegisterUserRequest->validate($data);
+        
         $payloadDto = new CirclePayloadDto(
                         $validData['type'],
                         $validData['id'],
