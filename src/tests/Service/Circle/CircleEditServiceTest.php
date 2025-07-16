@@ -1,7 +1,6 @@
 <?php
-namespace App\Tests\Service;
+namespace App\Tests\Service\Circle;
 
-use App\Entity\Circle;
 use App\DTO\Circle\CircleDto;
 use App\ValueObject\HexColor;
 use PHPUnit\Framework\TestCase;

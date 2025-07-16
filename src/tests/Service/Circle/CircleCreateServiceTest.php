@@ -1,10 +1,7 @@
 <?php
-namespace App\Tests\Service;
+namespace App\Tests\Service\Circle;
 
 use App\Entity\User;
-use App\Entity\Circle;
-use App\ValueObject\HexColor;
-use PHPUnit\Framework\TestCase;
 use App\DTO\Circle\CircleCreateDto;
 use App\Service\Qr\CircleQrService;
 use App\Repository\CircleRepository;

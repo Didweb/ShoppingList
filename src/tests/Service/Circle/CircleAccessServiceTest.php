@@ -1,5 +1,5 @@
 <?php
-namespace App\Tests\Service;
+namespace App\Tests\Service\Circle;
 
 use App\Entity\User;
 use App\Entity\Circle;
