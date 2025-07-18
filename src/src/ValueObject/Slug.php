@@ -6,7 +6,7 @@ use InvalidArgumentException;
 final class Slug
 {
     
-private string $value;
+    private string $value;
 
     public function __construct(string $text)
     {
@@ -36,6 +36,7 @@ private string $value;
     {
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $text);
         $slug = preg_replace('/[^A-Za-z0-9-]+/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug); 
         $slug = trim($slug, '-');
         return strtolower($slug);
     }

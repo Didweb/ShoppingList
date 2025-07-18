@@ -31,6 +31,4 @@ final class CircleDto
             $qrBase64
         );
     }
-
-
 }

@@ -14,25 +14,25 @@ use App\Utils\CircleAccessCheckerInterface;
 class CircleGetService
 {
     public function __construct(
-            private CircleRepository $cricleRepository,
+            private CircleRepository $circleRepository,
             private EntityManagerInterface $em,
             private CircleQrService $qrService,
             private CircleAccessCheckerInterface $accessChecker)
     {}
 
-    public function get(CircleGetDto $cirleGetDto, AuthenticatedUserInterface $authUser): CircleDto
+    public function get(CircleGetDto $circleGetDto, AuthenticatedUserInterface $authUser): CircleDto
     {
-        $circle = $this->cricleRepository->find($cirleGetDto->id);
+        $circle = $this->circleRepository->find($circleGetDto->id);
 
         if(!$circle) {
-            throw new EntityNotFoundException('Circle con id: ['.$cirleGetDto->id.'] no encontrado.');
+            throw new EntityNotFoundException('Circle con id: ['.$circleGetDto->id.'] no encontrado.');
         }
 
         if (!$this->accessChecker->userCanAccessCircle($circle, $authUser)) {
             throw new UnauthorizedException('No tienes acceso a este círculo.');
         }
 
-        $imageBase64 = $this->qrService->getQrImageBase64FromFile($cirleGetDto->id);
+        $imageBase64 = $this->qrService->getQrImageBase64FromFile($circleGetDto->id);
 
         return  CircleDto::fromEntity($circle, $imageBase64);
     }
