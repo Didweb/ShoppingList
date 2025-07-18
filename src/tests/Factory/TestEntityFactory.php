@@ -157,4 +157,5 @@ class TestEntityFactory
 
         return $circle;
     }
+
 }
