@@ -1,7 +1,6 @@
 <?php
 namespace App\Utils;
 
-use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class AuthenticatedUser implements AuthenticatedUserInterface

@@ -6,7 +6,6 @@ use App\ValueObject\Slug;
 use App\DTO\Item\ItemPartialDto;
 use App\Repository\ItemRepository;
 use App\DTO\Item\ItemSuggestionDto;
-use App\Utils\AuthenticatedUserInterface;
 use App\Service\Circle\CircleAccessService;
 
 class ItemAutocompleteService
@@ -16,12 +15,12 @@ class ItemAutocompleteService
         private CircleAccessService $circleAccessService) 
     {}
 
-    public function suggest(ItemPartialDto $itemPartialDto, AuthenticatedUserInterface $authUser): array
+    public function suggest(ItemPartialDto $itemPartialDto): array
     {
         $searchTerm = mb_strtolower(trim($itemPartialDto->partial));
         $slugPartial = (new Slug($searchTerm))->value();
 
-        $allowedOwnerIds = $this->circleAccessService->getAllowedOwnerIds($authUser->getId());
+        $allowedOwnerIds = $this->circleAccessService->getAllowedOwnerIds($itemPartialDto->idUser);
         $candidates = $this->itemRepository->findBySlugLikeAndOwners($slugPartial, $allowedOwnerIds);
 
         $canonicalCandidates = [];
