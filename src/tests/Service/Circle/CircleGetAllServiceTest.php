@@ -1,58 +1,51 @@
 <?php
 namespace App\Tests\Service\Circle;
 
-use PHPUnit\Framework\TestCase;
 use App\Service\Qr\CircleQrService;
 use App\Repository\CircleRepository;
 use App\Tests\Factory\TestEntityFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\AuthenticatedUserInterface;
 use App\Service\Circle\CircleGetAllService;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class CircleGetAllServiceTest extends TestCase
+class CircleGetAllServiceTest extends KernelTestCase
 {
     private CircleRepository $circleRepository;
     private EntityManagerInterface $em;
-    private CircleQrService $qrService;
     private CircleGetAllService $service;
 
     protected function setUp(): void
     {
-        $this->circleRepository = new class extends CircleRepository {
-            private array $circles = [];
+        self::bootKernel();
+        $container = static::getContainer();
 
-            public function setCircles(array $circles): void
-            {
-                $this->circles = $circles;
-            }
-
-            public function findByOwnerOrMembership(int $userId): array
-            {
-                return array_filter($this->circles, function ($circle) use ($userId) {
-                    return $circle->getCreatedBy()->getId() === $userId
-                        || in_array($userId, array_map(fn($u) => $u->getId(), $circle->getUsers()->toArray()));
-                });
-            }
-        };
-
-        $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->qrService = $this->createMock(CircleQrService::class);
+        $this->em = $container->get(EntityManagerInterface::class);
+        $this->circleRepository = $container->get(CircleRepository::class);
 
         $this->service = new CircleGetAllService(
             $this->circleRepository,
             $this->em,
-            $this->qrService
+            $container->get(CircleQrService::class)
         );
+
+        $this->em->createQuery('DELETE FROM App\Entity\Circle')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\User')->execute();
+
     }
 
     public function testReturnsAllOwnedCircles(): void
     {
-        $owner = TestEntityFactory::makeUser(1);
+        $owner = TestEntityFactory::makeUser(1, 'name');
+        $this->em->persist($owner);
 
         $circle1 = TestEntityFactory::makeCircle(10, 'Circle 1', '#123456', $owner);
         $circle2 = TestEntityFactory::makeCircle(20, 'Circle 2', '#654321', $owner);
 
-        $this->circleRepository->setCircles([$circle1, $circle2]);
+        $this->em->persist($circle1);
+        $this->em->persist($circle2);
+
+        $this->em->flush();
 
         $authUser = new class($owner->getId()) implements AuthenticatedUserInterface {
             public function __construct(private int $id) {}
@@ -68,13 +61,19 @@ class CircleGetAllServiceTest extends TestCase
 
     public function testReturnsOnlyCirclesUserIsMemberOf(): void
     {
-        $owner = TestEntityFactory::makeUser(1);
-        $member = TestEntityFactory::makeUser(2);
+        $owner = TestEntityFactory::makeUser(1,'owner', 'info@owner.com');
+        $member = TestEntityFactory::makeUser(2,'member', 'info@member.com');
+
+        $this->em->persist($owner);
+        $this->em->persist($member);
 
         $circle1 = TestEntityFactory::makeCircle(10, 'Owned Circle', '#ABCDEF', $owner);
         $circle2 = TestEntityFactory::makeCircle(20, 'Member Circle', '#FEDCBA', $owner, [$member]);
 
-        $this->circleRepository->setCircles([$circle1, $circle2]);
+        $this->em->persist($circle1);
+        $this->em->persist($circle2);
+
+        $this->em->flush();
 
         $authUser = new class($member->getId()) implements AuthenticatedUserInterface {
             public function __construct(private int $id) {}
@@ -89,8 +88,7 @@ class CircleGetAllServiceTest extends TestCase
 
     public function testReturnsEmptyArrayWhenNoCircles(): void
     {
-        $this->circleRepository->setCircles([]);
-
+        
         $authUser = new class(1) implements AuthenticatedUserInterface {
             public function __construct(private int $id) {}
             public function getId(): int { return $this->id; }

@@ -51,7 +51,7 @@ class TestEntityFactory
     }
 
 
-    public static function makeUser(int $id, string $name = 'Test User'): User
+    public static function makeUser(int $id, string $name = 'Test User', string $email = 'info@prueba-test.com'): User
     {
         $user = new User();
 
@@ -63,6 +63,14 @@ class TestEntityFactory
         $nameProp = $ref->getProperty('name');
         $nameProp->setAccessible(true);
         $nameProp->setValue($user, $name);
+
+        $nameProp = $ref->getProperty('email');
+        $nameProp->setAccessible(true);
+        $nameProp->setValue($user, $email);
+
+        $nameProp = $ref->getProperty('password');
+        $nameProp->setAccessible(true);
+        $nameProp->setValue($user, '12345678');
 
         return $user;
     }

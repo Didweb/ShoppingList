@@ -82,6 +82,8 @@ class CircleGetServiceTest extends KernelTestCase
 
         $authUser = $this->createMock(AuthenticatedUserInterface::class);
 
+        $this->createDummyQrPng($circle->getId());
+        
         $result = $this->service->get($dto, $authUser);
 
         $this->assertSame($circle->getId(), $result->id);
@@ -117,13 +119,15 @@ class CircleGetServiceTest extends KernelTestCase
         $this->createDummyQrPng($circle->getId());
 
         $authUser = $this->createMock(AuthenticatedUserInterface::class);
-        $this->accessChecker->userCanAccessCircle($circle, $authUser);
 
+        /** @var object $checker */
+        $checker = $this->accessChecker;
+        $checker->setAccess(false);
         $dto = new CircleGetDto($circle->getId());
 
         $this->expectException(UnauthorizedException::class);
-
         $this->service->get($dto, $authUser);
+
     }
 
     protected function tearDown(): void
