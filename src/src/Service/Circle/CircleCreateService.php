@@ -17,7 +17,7 @@ class CircleCreateService
             private CircleQrService $qrService)
     {}
 
-    public function create(User $user, ?CircleCreateDto $cirleCreateDto): void
+    public function create(User $user, CircleCreateDto $cirleCreateDto): void
     {
         $circle = new Circle();
         $circle->setName($cirleCreateDto->name);

@@ -1,7 +1,6 @@
 <?php
 namespace App\Entity;
 
-
 use App\ValueObject\Status;
 use Doctrine\ORM\Mapping as ORM;
 

@@ -1,14 +1,11 @@
 <?php
 namespace App\Service\Circle;
 
-use App\DTO\Circle\CircleDto;
 use App\DTO\Circle\CircleSimpleDto;
 use App\Service\Qr\CircleQrService;
 use App\Repository\CircleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\DTO\ShoppingList\ShoppingListDto;
 use App\Utils\AuthenticatedUserInterface;
-use App\DTO\ShoppingListItem\ShoppingListItemDto;
 
 class CircleGetAllService
 {

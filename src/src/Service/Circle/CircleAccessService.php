@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\Circle;
 
-use App\Entity\User;
 use App\Repository\CircleRepository;
 
 class CircleAccessService
