@@ -31,6 +31,7 @@ class CircleCreateServiceTest extends KernelTestCase
         );
 
         // Limpiamos para evitar datos sucios
+        $this->em->createQuery('DELETE FROM App\Entity\ShoppingList')->execute();
         $this->em->createQuery('DELETE FROM App\Entity\Circle')->execute();
         $this->em->createQuery('DELETE FROM App\Entity\User')->execute();
     }

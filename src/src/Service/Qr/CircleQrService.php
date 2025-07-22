@@ -93,6 +93,4 @@ class CircleQrService implements QrServiceInterface
 
         return $data;
     }
-
-
 }
