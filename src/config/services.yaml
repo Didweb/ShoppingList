@@ -44,3 +44,4 @@ services:
             $security: '@security.helper'
 
     App\Utils\AuthenticatedUserInterface: '@App\Utils\AuthenticatedUser'
+
