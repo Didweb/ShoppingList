@@ -76,19 +76,22 @@ class TestEntityFactory
     }
 
     public static function makeShoppingList(
-        int $id = 1,
-        string $name = 'My Shopping List',
-        ?User $createdBy = null,
-        ?Circle $circle = null
-    ): ShoppingList {
+                    ?int $id = 1,
+                    string $name = 'My Shopping List',
+                    ?User $createdBy = null,
+                    ?Circle $circle = null): ShoppingList 
+    {
         $shoppingList = new ShoppingList();
 
         $ref = new \ReflectionClass($shoppingList);
 
-        // ID
-        $idProp = $ref->getProperty('id');
+        //ID
+        if($id != null) {
+                $idProp = $ref->getProperty('id');
         $idProp->setAccessible(true);
         $idProp->setValue($shoppingList, $id);
+        }
+    
 
         // Name
         $nameProp = $ref->getProperty('name');
@@ -157,4 +160,5 @@ class TestEntityFactory
 
         return $circle;
     }
+
 }
