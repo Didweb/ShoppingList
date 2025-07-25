@@ -1,10 +1,12 @@
 <?php
 namespace App\Tests\Service\ShoppingList;
 
+use App\Entity\Circle;
 use App\Entity\ShoppingList;
 use App\Tests\Factory\TestEntityFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\AuthenticatedUserInterface;
+use App\DTO\Circle\CircleSimpleWithListsDto;
 use App\DTO\ShoppingList\ShoppingListSimpleDto;
 use App\Service\ShoppingList\ShoppingListGetAllService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -21,8 +23,8 @@ class ShoppingListGetAllServiceTest extends KernelTestCase
 
         $this->em = $container->get(EntityManagerInterface::class);
 
-        /** @var ShoppingListRepository $repo */
-        $repo = $this->em->getRepository(ShoppingList::class);
+        /** @var CricleRepository $repo */
+        $repo = $this->em->getRepository(Circle::class);
 
         $this->service = new ShoppingListGetAllService(
             $repo,
@@ -73,11 +75,11 @@ class ShoppingListGetAllServiceTest extends KernelTestCase
 
         // Assert
         $this->assertIsArray($result);
-        $this->assertCount(2, $result);
+        $this->assertCount(1, $result);
 
         foreach ($result as $dto) {
-            $this->assertInstanceOf(ShoppingListSimpleDto::class, $dto);
-            $this->assertTrue(in_array($dto->name, ['Lista U1-A', 'Lista U1-B']));
+            $this->assertInstanceOf(CircleSimpleWithListsDto::class, $dto);
+            $this->assertTrue(in_array($dto->name, ['Circle 1']));
         }
     }
 }
