@@ -3,29 +3,29 @@ namespace App\Service\ShoppingList;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\AuthenticatedUserInterface;
-use App\Repository\ShoppingListRepository;
-use App\DTO\ShoppingList\ShoppingListSimpleDto;
+use App\DTO\Circle\CircleSimpleWithListsDto;
+use App\Repository\CircleRepository;
 
 class ShoppingListGetAllService
 {
     public function __construct(
-        private ShoppingListRepository $shoppingListRepository,
+        private CircleRepository $circleRepository,
         private EntityManagerInterface $em)
     {}
 
     public function get(AuthenticatedUserInterface $authUser): array
     {
 
-        $shoppingLists = $this->shoppingListRepository->findByUserAccess($authUser->getId());
+        $circleShoppingLists = $this->circleRepository->findByOwnerOrMembership($authUser->getId());
 
-        $shoppingListArr = [];
+        $circleShoppingListArr = [];
 
-        foreach ($shoppingLists as $shoppingList) {
+        foreach ($circleShoppingLists as $circleShoppingList) {
             
-            $shoppingListArr[] = ShoppingListSimpleDto::fromEntity($shoppingList);
+            $circleShoppingListArr[] = CircleSimpleWithListsDto::fromEntity($circleShoppingList);
         }
 
-        return $shoppingListArr;
+        return $circleShoppingListArr;
 
     }
 }
