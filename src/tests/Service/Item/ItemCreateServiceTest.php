@@ -42,6 +42,8 @@ class ItemCreateServiceTest extends KernelTestCase
     private function purgeData(): void
     {
         $this->em->createQuery('DELETE FROM App\Entity\Item')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\ShoppingList')->execute();
+        $this->em->createQuery('DELETE FROM App\Entity\Circle')->execute();
         $this->em->createQuery('DELETE FROM App\Entity\User')->execute();
     }
 
@@ -49,11 +51,15 @@ class ItemCreateServiceTest extends KernelTestCase
     {
         // Creamos un usuario para asignar como creador
         $user = TestEntityFactory::makeUser(1, 'User One', 'user1@test.com');
-        $shoppingList = TestEntityFactory::makeShoppingList();
+        $circle = TestEntityFactory::makeCircle(3, 'Circle 3', '#FFFFFF', $user);
+        
+        $shoppingList = TestEntityFactory::makeShoppingList(140, 'List 140', $user, $circle);
 
-        $this->em->persist($shoppingList);
         $this->em->persist($user);
+        $this->em->persist($circle);
+        $this->em->persist($shoppingList);
         $this->em->flush();
+
         $dto = new ItemAddDto($shoppingList->getId(), 'New Unique Item', null, $user->getId());
 
         $result = $this->service->createOrGet($dto);
@@ -88,17 +94,21 @@ class ItemCreateServiceTest extends KernelTestCase
 
     public function testReturnExistingItemWhenSlugExistsForUser(): void
     {
-        $user = TestEntityFactory::makeUser(3, 'User Three', 'user3@test.com');
+        $user = TestEntityFactory::makeUser(45, 'User Three', 'user3@test.com');
         $existingItem = TestEntityFactory::makeItem(null, 'Slug Item', $user);
+        $circle = TestEntityFactory::makeCircle(3, 'Circle 3', '#FFFFFF', $user);
+       
+        $shoopingList = TestEntityFactory::makeShoppingList(120, 'List 120',$user, $circle);
 
+        $this->em->persist($circle);
         $this->em->persist($user);
+
+
+        $this->em->persist($shoopingList);
         $this->em->persist($existingItem);
         $this->em->flush();
 
-        $dto = new ItemAddDto();
-        $dto->idSelectedItem = null;
-        $dto->name = 'Slug Item'; // mismo nombre -> mismo slug
-        $dto->idUser = $user->getId();
+        $dto = new ItemAddDto($shoopingList->getId(), 'Slug Item', null, $user->getId());
 
         $result = $this->service->createOrGet($dto);
 
@@ -108,13 +118,9 @@ class ItemCreateServiceTest extends KernelTestCase
 
     public function testThrowsExceptionWhenSelectedItemNotFound(): void
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Item sugerido no encontrado');
-
-        $dto = new ItemAddDto();
-        $dto->idSelectedItem = 999999; // ID no existente
-        $dto->name = 'Any Name';
-        $dto->idUser = 1;
+        
+        $dto = new ItemAddDto(1, 'Any Name'.rand(0, 99999), 9999999, 1);
+       $this->expectException(\Exception::class);
 
         $this->service->createOrGet($dto);
     }

@@ -25,19 +25,26 @@ class ItemChangeStatusService
 
     public function change(ItemChangeStatusDto $itemChangeStatusDto): ShoppingListItemDto
     {
+
         $shoppingList = $this->shoppingListRepository->find($itemChangeStatusDto->idShoppingList);
+        $item = $this->shoppingListItemRepository->find($itemChangeStatusDto->idItem);
 
         if(!$shoppingList) {
             throw new EntityNotFoundException('Shopping List con id: ['.$itemChangeStatusDto->idShoppingList.'] no encontrado.');
         }
+
+        if(!$item) {
+            throw new EntityNotFoundException('Item con id: ['.$itemChangeStatusDto->idItem.'] no encontrado.');
+        }
+
 
         if (!$this->accessChecker->userCanAccessShoppingList($shoppingList, $itemChangeStatusDto->idUser)) {
             throw new UnauthorizedException('No tienes acceso a esta Shopping Lista.');
         }
 
         $shoppingListItem = $this->shoppingListItemRepository->findOneBy([
-                                'shoppingList' => $itemChangeStatusDto->idShoppingList,
-                                'item' => $itemChangeStatusDto->idItem,
+                                'shoppingList' => $shoppingList,
+                                'item' => $item,
                             ]);
 
         if (!$shoppingListItem) {
