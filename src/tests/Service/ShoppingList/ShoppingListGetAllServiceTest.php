@@ -2,12 +2,10 @@
 namespace App\Tests\Service\ShoppingList;
 
 use App\Entity\Circle;
-use App\Entity\ShoppingList;
 use App\Tests\Factory\TestEntityFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Utils\AuthenticatedUserInterface;
 use App\DTO\Circle\CircleSimpleWithListsDto;
-use App\DTO\ShoppingList\ShoppingListSimpleDto;
 use App\Service\ShoppingList\ShoppingListGetAllService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
