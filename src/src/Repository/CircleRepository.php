@@ -26,4 +26,5 @@ class CircleRepository extends ServiceEntityRepository
 
         return $qb->getResult();
     }
+
 }
