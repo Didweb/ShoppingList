@@ -17,7 +17,7 @@ class CircleCreateService
             private CircleQrService $qrService)
     {}
 
-    public function create(User $user, CircleCreateDto $cirleCreateDto): void
+    public function create(User $user, CircleCreateDto $cirleCreateDto): int
     {
         $circle = new Circle();
         $circle->setName($cirleCreateDto->name);
@@ -36,5 +36,6 @@ class CircleCreateService
         $this->em->persist($circle);
         $this->em->flush();
         
+        return $circle->getId();
     }
 }

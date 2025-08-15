@@ -20,6 +20,6 @@ class ShoppingListGetAllController extends AbstractController
     {
         $shoppingListSimpleDto = $this->shoppingListGetAllService->get($this->authUser);
 
-        return JsonResponseFactory::success(['shopping lists' => $shoppingListSimpleDto]);
+        return JsonResponseFactory::success(['circles' => $shoppingListSimpleDto]);
     } 
 }
