@@ -81,10 +81,10 @@ class ItemAutocompleteService
                 $canonicalCandidates[$closestItem->getId()] = $closestItem;
             }
         }
+//dd($canonicalCandidates);
 
-    
         return array_map(
-            fn (Item $item) => new ItemSuggestionDto($item->getName()),
+            fn (Item $item) => new ItemSuggestionDto($item->getId(), $item->getName()),
             array_values($canonicalCandidates)
         );
     }
