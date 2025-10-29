@@ -39,7 +39,7 @@ class RegisterService
         $this->em->persist($user);
         $this->em->flush();
 
-        $cirleCreateDto = new CircleCreateDto('Principal', '#6B00AF');
+        $cirleCreateDto = new CircleCreateDto($user->getName(), '#6B00AF');
         
         $this->circleCreateService->create($user, $cirleCreateDto);
         
