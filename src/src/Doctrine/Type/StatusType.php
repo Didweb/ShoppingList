@@ -1,5 +1,5 @@
 <?php
-namespace App\Doctrine;
+namespace App\Doctrine\Type;
 
 
 use App\ValueObject\Status;

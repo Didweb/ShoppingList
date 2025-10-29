@@ -18,3 +18,30 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\Qr\CircleQrService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\EventListener\InvalidRequestExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, priority: 100  }
+            
+    App\EventListener\ApiExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -100 }
+
+    App\Utils\EnvironmentChecker:
+        arguments:
+            $environment: '%kernel.environment%'
+        public: false
+
+    App\Utils\EnvironmentCheckerInterface:
+        alias: App\Utils\EnvironmentChecker
+
+    App\Utils\AuthenticatedUser:
+        arguments:
+            $security: '@security.helper'
+
+    App\Utils\AuthenticatedUserInterface: '@App\Utils\AuthenticatedUser'
+

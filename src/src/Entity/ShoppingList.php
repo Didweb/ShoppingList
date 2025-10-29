@@ -26,7 +26,7 @@ class ShoppingList
     private ?\DateTimeImmutable $createAt = null;
 
     #[ORM\ManyToOne(targetEntity: Circle::class, inversedBy: 'shoppingLists')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Circle $circle;
 
     #[ORM\OneToMany(mappedBy: 'shoppingList', targetEntity: ShoppingListItem::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -47,7 +47,7 @@ class ShoppingList
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
