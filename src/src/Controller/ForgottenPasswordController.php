@@ -39,11 +39,11 @@ class ForgottenPasswordController extends AbstractController
             $user->setResetPasswordExpiresAt(new \DateTimeImmutable('+1 hour'));
             $em->flush();
 
-            $resetLink = sprintf('https://yourapp.com/reset-password?token=%s', $token);
+            $resetLink = sprintf('yourapp://reset-password?token=%s', $token);
 
             $email = (new Email())
                 ->from('no-reply@example.com')
-                ->to('user@example.com')
+                ->to($data['email'])
                 ->subject('Reset your password')
                 ->html(sprintf('Click here to reset your password: <a href="%s">%s</a>', $resetLink, $resetLink));
 
