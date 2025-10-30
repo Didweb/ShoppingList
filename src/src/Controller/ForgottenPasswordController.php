@@ -19,10 +19,12 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class ForgottenPasswordController extends AbstractController
 {
     private string $nameAppAndroid;
-    
-    public function __construct(string $nameAppAndroid)
+    private string $mailListas;
+
+    public function __construct(string $nameAppAndroid, string $mailListas)
     {
         $this->nameAppAndroid = $nameAppAndroid;
+        $this->mailListas = $mailListas;
     }
 
     #[Route('/forgot', name: 'forgot', methods: ['POST'])]
@@ -50,7 +52,7 @@ class ForgottenPasswordController extends AbstractController
             $resetLink = sprintf('%s://reset-password?token=%s', $this->nameAppAndroid, $token);
 
             $email = (new Email())
-                ->from('info@did-web.com')
+                ->from($this->mailListas)
                 ->to($data['email'])
                 ->subject('Reset your password')
                 ->html(sprintf('Click here to reset your password: <a href="%s">%s</a>', $resetLink, $resetLink));
