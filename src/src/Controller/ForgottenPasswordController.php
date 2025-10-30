@@ -18,6 +18,13 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ForgottenPasswordController extends AbstractController
 {
+    private string $nameAppAndroid;
+    
+    public function __construct(string $nameAppAndroid)
+    {
+        $this->nameAppAndroid = $nameAppAndroid;
+    }
+
     #[Route('/forgot', name: 'forgot', methods: ['POST'])]
     public function forgot(
         Request $request,
@@ -39,11 +46,12 @@ class ForgottenPasswordController extends AbstractController
             $user->setResetPasswordExpiresAt(new \DateTimeImmutable('+1 hour'));
             $em->flush();
 
-            $resetLink = sprintf('https://yourapp.com/reset-password?token=%s', $token);
+            
+            $resetLink = sprintf('%s://reset-password?token=%s', $this->nameAppAndroid, $token);
 
             $email = (new Email())
-                ->from('no-reply@example.com')
-                ->to('user@example.com')
+                ->from('info@did-web.com')
+                ->to($data['email'])
                 ->subject('Reset your password')
                 ->html(sprintf('Click here to reset your password: <a href="%s">%s</a>', $resetLink, $resetLink));
 
