@@ -10,6 +10,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Utils\JsonResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,6 +19,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class ForgottenPasswordController extends AbstractController
 {
+    private string $nameAppAndroid;
+    private string $mailListas;
+
+    public function __construct(string $nameAppAndroid, string $mailListas)
+    {
+        $this->nameAppAndroid = $nameAppAndroid;
+        $this->mailListas = $mailListas;
+    }
+
     #[Route('/forgot', name: 'forgot', methods: ['POST'])]
     public function forgot(
         Request $request,
@@ -28,7 +38,7 @@ class ForgottenPasswordController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email'])) {
-            return $this->json(['error' => 'Email is required.'], 400);
+            return JsonResponseFactory::error('Email is required.', 400);
         }
 
         $user = $userRepository->findOneBy(['email' => $data['email']]);
@@ -39,10 +49,11 @@ class ForgottenPasswordController extends AbstractController
             $user->setResetPasswordExpiresAt(new \DateTimeImmutable('+1 hour'));
             $em->flush();
 
-            $resetLink = sprintf('yourapp://reset-password?token=%s', $token);
+            
+            $resetLink = sprintf('%s://reset-password?token=%s', $this->nameAppAndroid, $token);
 
             $email = (new Email())
-                ->from('no-reply@example.com')
+                ->from($this->mailListas)
                 ->to($data['email'])
                 ->subject('Reset your password')
                 ->html(sprintf('Click here to reset your password: <a href="%s">%s</a>', $resetLink, $resetLink));
@@ -51,7 +62,9 @@ class ForgottenPasswordController extends AbstractController
         }
 
         // Responder siempre igual, para no filtrar usuarios
-        return $this->json(['message' => 'If an account with that email exists, an email has been sent.']);
+        return JsonResponseFactory::success([
+            'message' => 'If an account with that email exists, an email has been sent.'
+        ]);
     }
 
     #[Route('/reset/{token}', name: 'reset', methods: ['POST'])]
@@ -65,12 +78,12 @@ class ForgottenPasswordController extends AbstractController
         $user = $userRepository->findOneBy(['resetPasswordToken' => $token]);
 
         if (!$user || $user->getResetPasswordExpiresAt() < new \DateTimeImmutable()) {
-            return $this->json(['error' => 'This reset link is invalid or expired.'], 400);
+            return JsonResponseFactory::error('This reset link is invalid or expired.', 400);
         }
 
         $data = json_decode($request->getContent(), true);
         if (empty($data['password'])) {
-            return $this->json(['error' => 'Password is required.'], 400);
+            return JsonResponseFactory::error('Password is required.');
         }
 
         $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
@@ -79,6 +92,9 @@ class ForgottenPasswordController extends AbstractController
         $user->setResetPasswordExpiresAt(null);
         $em->flush();
 
-        return $this->json(['message' => 'Your password has been reset.']);
+        return JsonResponseFactory::success([
+            'message' => 'Your password has been reset.'
+        ]);
+        
     }
 }
