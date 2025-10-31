@@ -78,7 +78,7 @@ class ForgottenPasswordController extends AbstractController
         $user = $userRepository->findOneBy(['resetPasswordToken' => $token]);
 
         if (!$user || $user->getResetPasswordExpiresAt() < new \DateTimeImmutable()) {
-            return $this->json(['error' => 'This reset link is invalid or expired.'], 400);
+            return JsonResponseFactory::error('This reset link is invalid or expired.', 400);
         }
 
         $data = json_decode($request->getContent(), true);
