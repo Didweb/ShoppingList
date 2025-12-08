@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Item;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Item>
@@ -59,5 +60,15 @@ class ItemRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function deleteAllItemsByOwner(User $user): void
+    {
+        $this->createQueryBuilder('i')
+            ->delete(Item::class, 'i')
+            ->where('i.createdBy = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
     }
 }
