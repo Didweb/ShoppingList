@@ -11,7 +11,7 @@ final class PoliticsController  extends AbstractController
     public function index(): Response
     {
         return $this->render('politics/index.html.twig', [
-            'title' => 'Estándares de seguridad',
+            'title' => 'Política de privacidad',
         ]);
     }
 }

@@ -11,7 +11,7 @@ final class SafetyController  extends AbstractController
     public function index(): Response
     {
         return $this->render('safety.html.twig', [
-            'title' => 'Política de privacidad',
+            'title' => 'Estándares de seguridad',
         ]);
     }
 }
