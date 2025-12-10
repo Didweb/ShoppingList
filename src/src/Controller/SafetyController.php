@@ -5,13 +5,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class PoliticsController  extends AbstractController
+final class SafetyController  extends AbstractController
 {
-    #[Route('/politics', name: 'app_politics')]
+    #[Route('/safety', name: 'app_safety')]
     public function index(): Response
     {
-        return $this->render('politics/index.html.twig', [
-            'title' => 'Estándares de seguridad',
+        return $this->render('safety.html.twig', [
+            'title' => 'Política de privacidad',
         ]);
     }
 }
