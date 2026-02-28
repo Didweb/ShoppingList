@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class PoliticsController  extends AbstractController
 {
-    #[Route('/politica-privacidad', name: 'app_politics')]
+    #[Route('/politicas-de-privacidad', name: 'app_politics')]
     public function index(): Response
     {
         return $this->render('politics/index.html.twig', [
