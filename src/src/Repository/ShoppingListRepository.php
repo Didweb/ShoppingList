@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\ShoppingList;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<ShoppingList>
@@ -27,4 +28,14 @@ class ShoppingListRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    public function deleteAllItemsByOwner(User  $user): void
+    {
+        $lists = $this->shoppingListRepository->findBy(['createdBy' => $user]);
+                    foreach ($lists as $list) {
+                        $this->em->remove($list);
+                    }
+    }
+
 }

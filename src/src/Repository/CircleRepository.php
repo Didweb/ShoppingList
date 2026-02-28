@@ -27,4 +27,9 @@ class CircleRepository extends ServiceEntityRepository
         return $qb->getResult();
     }
 
+
+    public function deleteByOwner(int $owner): void
+    {
+        
+    }
 }

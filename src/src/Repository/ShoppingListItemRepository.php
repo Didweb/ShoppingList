@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\ShoppingListItem;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<ShoppingListItem>
@@ -41,5 +42,27 @@ class ShoppingListItemRepository extends ServiceEntityRepository
             ->setParameter('itemId', $idItem)
             ->getQuery()
             ->execute();
+    }
+
+    public function deleteAllByAddedBy(User $user): void
+    {
+        $this->createQueryBuilder('sli')
+            ->delete()
+            ->where('sli.addedBy = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteAllByItemsCreatedBy(User $user): void
+    {
+        $this->createQueryBuilder('sli')
+                ->delete()
+                ->where('sli.item IN (
+                    SELECT i.id FROM App\Entity\Item i WHERE i.createdBy = :user
+                )')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->execute();
     }
 }
