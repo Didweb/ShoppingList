@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\DTO\Auth\LoginDto;
 use App\DTO\Auth\RegisterDto;
 use App\Request\Auth\LoginRequest;
@@ -16,11 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 final class AuthController extends AbstractController
 {
-
     public function __construct(
         private RegisterService $registerService,
         private LoginService $loginService,

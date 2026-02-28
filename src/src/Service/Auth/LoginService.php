@@ -12,7 +12,6 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 class LoginService
 {
     public function __construct(
-            private UserRepository $userRepository,
             private EntityManagerInterface $em,
             private UserPasswordHasherInterface $passwordHasher,
             private JWTTokenManagerInterface $JWTManager)
